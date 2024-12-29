@@ -11,6 +11,7 @@ public class ConsoleManager
     public void ReadUserInput()
     {
         using var db = new UserDatabase();
+        db.Database.EnsureCreated();
 
         while (true)
         {
