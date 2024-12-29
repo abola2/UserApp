@@ -10,6 +10,8 @@ public class ConsoleManager
 
     public void ReadUserInput()
     {
+        using var db = new UserDatabase();
+
         while (true)
         {
             Console.WriteLine("Whats your name?");
@@ -24,7 +26,8 @@ public class ConsoleManager
             Console.WriteLine($"Hello {name}, what's your password?");
             String ?password = Console.ReadLine();
             User user = new User(name, password);
-            _users.Add(user.Uuid, user);
+            db.Add(user);
+            db.SaveChanges();
             Console.WriteLine("User saved!");    
         }
         
