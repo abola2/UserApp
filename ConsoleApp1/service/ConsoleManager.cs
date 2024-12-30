@@ -11,39 +11,53 @@ public class ConsoleManager
     public ConsoleManager(UserController userController)
     {
         _userController = userController;
+        
     }
 
     private Dictionary<String, User> _users = new Dictionary<String, User>();
 
+    private static int LOGIN = 0;
+    private static int NEW_ACCOUNT = 1;
+
     public void ReadUserInput()
     {
-        using var db = new UserDatabase();
-        db.Database.EnsureCreated();
+        UserDatabase.Instance.Database.EnsureCreated();
 
+
+        int userAction = Login();
+
+        if (userAction == LOGIN)
+        {
+            
+        }
+        else if (userAction == NEW_ACCOUNT)
+        {
+            User user = _userController.AddUser();
+            Console.WriteLine(user.Name);
+        }
+
+        
+        
+    }
+
+
+
+    private int Login()
+    {
         while (true)
         {
-            Console.WriteLine("Whats your name?");
-            String? name = Console.ReadLine();
-
-            if (_users.Values.Select(x => x.Name).Contains(name))
+            Console.WriteLine("Do you want login or create new account?");
+            Console.WriteLine("(0) LOGIN");
+            Console.WriteLine("(1) NEW ACCOUNT");
+            String ?input = Console.ReadLine();
+            bool success = int.TryParse(input, out int userAction);
+            if (success)
             {
-                Console.WriteLine("That name is already taken.");
-                continue;
+                if (userAction == LOGIN || userAction == NEW_ACCOUNT)
+                {
+                    return userAction;
+                }
             }
-            
-            Console.WriteLine($"Hello {name}, what's your password?");
-            String ?password = Console.ReadLine();
-            User user = new User(name, password);
-            db.Add(user);
-            db.SaveChanges();
-            _userController.addUser(user);
-            User newUser = db.Users.Where(u => u.Name == user.Name && u.Password == user.Password).First();
-            Book book = new Book("1", "1");
-            db.Add(book);
-            newUser.Books.Add(book);
-            db.SaveChanges();
-            Console.WriteLine("User saved!");    
-            _userController.addBook(user, new Book("1", "1"));
         }
         
     }

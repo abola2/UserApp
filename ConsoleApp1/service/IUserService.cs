@@ -1,4 +1,3 @@
-using ConsoleApp1.controller;
 using ConsoleApp1.model;
 
 namespace ConsoleApp1.service;
@@ -6,10 +5,14 @@ namespace ConsoleApp1.service;
 public interface IUserService
 {
 
-    void AddUser(User user);
+    bool AlreadyExist(String name);
+
+    User AddUser();
     
-    void UpdateUser(User user);
+    User UpdateUser(User user);
     
     void DeleteUser(User user);
+    
+    User Login(User user);
     
 }

@@ -7,16 +7,17 @@ public class UserController
 {
     private readonly IUserService _userService;
     private readonly IBookService _bookService;
-
+    
+    
     public UserController()
     {
         _userService = new UserSerivce();
         _bookService = new BookSerivce();
     }
 
-    public void addUser(User user)
+    public User AddUser()
     {
-        _userService.AddUser(user);
+        return _userService.AddUser();
     }
 
     public void addBook(User user, Book book)
