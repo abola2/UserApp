@@ -28,8 +28,10 @@ public class UserSerivce : IUserService
         Console.WriteLine("What is your password?");
         String? userPassword = Console.ReadLine();
         
-        
-        return new User(userName, userPassword);
+        User user = new User(userName, userPassword);
+        UserDatabase.Instance.Users.Add(user);
+        UserDatabase.Instance.SaveChanges();
+        return user;
     }
 
     public User UpdateUser(User user)
@@ -44,7 +46,12 @@ public class UserSerivce : IUserService
 
     public User? Login(User user)
     {
-        User? loginUser = UserDatabase.Instance.Users.Where(u => u.Name == user.Name && u.Password == user.Password).First();
-        if (loginUser != null)
+        User? loginUser = UserDatabase.Instance.Users.FirstOrDefault(u => u.Name == user.Name && u.Password == user.Password);
+        if (loginUser == null)
+        {
+            Console.WriteLine("Wrong username or password");
+            return null;
+        } 
+        return loginUser;
     }
 }

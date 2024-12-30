@@ -28,7 +28,16 @@ public class ConsoleManager
 
         if (userAction == LOGIN)
         {
-            
+            Console.WriteLine("What is your name?");
+            string name = Console.ReadLine();
+            Console.WriteLine("What is your password?");
+            string password = Console.ReadLine();
+            User loginUser = new User(name, password);
+            User? user = _userController.GetUser(loginUser);
+            if (user != null)
+            {
+                Console.WriteLine(user.Name);
+            }
         }
         else if (userAction == NEW_ACCOUNT)
         {

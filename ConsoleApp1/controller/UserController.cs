@@ -20,6 +20,13 @@ public class UserController
         return _userService.AddUser();
     }
 
+    public User? GetUser(User user)
+    {
+        
+        return _userService.Login(user);
+    }
+    
+
     public void addBook(User user, Book book)
     {
         _bookService.AddBook(user, book);
