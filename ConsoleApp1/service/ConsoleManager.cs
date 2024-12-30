@@ -1,3 +1,4 @@
+using ConsoleApp1.controller;
 using ConsoleApp1.model;
 
 namespace ConsoleApp1.service;
@@ -5,7 +6,13 @@ namespace ConsoleApp1.service;
 public class ConsoleManager
 {
     
+    private readonly UserController _userController;
     
+    public ConsoleManager(UserController userController)
+    {
+        _userController = userController;
+    }
+
     private Dictionary<String, User> _users = new Dictionary<String, User>();
 
     public void ReadUserInput()
@@ -29,17 +36,17 @@ public class ConsoleManager
             User user = new User(name, password);
             db.Add(user);
             db.SaveChanges();
+            _userController.addUser(user);
+            User newUser = db.Users.Where(u => u.Name == user.Name && u.Password == user.Password).First();
+            Book book = new Book("1", "1");
+            db.Add(book);
+            newUser.Books.Add(book);
+            db.SaveChanges();
             Console.WriteLine("User saved!");    
+            _userController.addBook(user, new Book("1", "1"));
         }
         
     }
 
-
-    private void Login()
-    {
-        
-    }
-    
-    
     
 }

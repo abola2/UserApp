@@ -3,21 +3,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ConsoleApp1.model;
 
-[Table("Users")]
-public class User
+[Table("Books")]
+public class Book
 {
-    public User(string name = null, string password = null)
+    public Book(string name = null, string author = null)
     {
         Name = name;
-        Password = password;
+        Author = author;
     }
 
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
     [Key]
     public String Uuid { get; set; }
     public String Name { get; set; }
-    public String Password { get; set; } 
-    public ICollection<Book> Books { get; } = new List<Book>();
+    public String Author { get; set; } 
+    public ICollection<User> Users { get; } = new List<User>();
     
     
 }
