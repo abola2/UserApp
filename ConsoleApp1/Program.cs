@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using ConsoleApp1.controller;
 using ConsoleApp1.model;
 using ConsoleApp1.service;
 using Microsoft.AspNetCore.Builder;
@@ -17,24 +18,17 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 var app = builder.Build();
 
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers(); 
+});
+
+
 UserDatabase database = serviceProvider.GetRequiredService<UserDatabase>();
 database.Database.EnsureCreated();
 
 
-app.MapPost("/register", async (User user) =>
-{
 
-    UserSerivce us = serviceProvider.GetRequiredService<UserSerivce>();
-
-    if (us.AlreadyExist(user.Name))
-    {
-        return Results.BadRequest("User already exist");
-    }
-
-    us.AddUser(user);
-    
-    return Results.Created("/users/" + user.Name, user);
-});
 
 
 app.MapPost("/login", async (User user) =>
@@ -57,7 +51,28 @@ app.MapPost("/login", async (User user) =>
     return Results.Created("/users/" + user.Name, user);
 });
 
+app.MapGet("/hello", (HttpContext httpContext) =>
+{
+    if (!httpContext.Request.Headers.TryGetValue("Authorization", out var authorizationHeader))
+    {
+        return Results.Unauthorized();
+    }
+    
+    UserDatabase ud = serviceProvider.GetRequiredService<UserDatabase>();
+
+    User? user = ud.Users.FirstOrDefault(u => u.Uuid == authorizationHeader.FirstOrDefault());
+
+    if (user == null)
+    {
+        return Results.BadRequest("Wrong username or password");
+    }
+    
+    return Results.Ok(user);
+});
+
 app.Run();
+
+
 
 
 
