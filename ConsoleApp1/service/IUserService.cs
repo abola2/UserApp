@@ -7,7 +7,7 @@ public interface IUserService
 
     bool AlreadyExist(String name);
 
-    User AddUser();
+    User AddUser(User user);
     
     User UpdateUser(User user);
     

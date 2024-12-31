@@ -1,4 +1,3 @@
-using ConsoleApp1.controller;
 using ConsoleApp1.model;
 
 namespace ConsoleApp1.service;

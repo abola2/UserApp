@@ -19,27 +19,12 @@ public class UserSerivce : IUserService
     }
     
 
-    public User AddUser()
+    public User AddUser(User user)
     {
-        
-        
-        
-        
-        bool invalidName = true;
-        String? userName = "";
-        while (invalidName)
+        if (AlreadyExist(user.Name))
         {
-            Console.WriteLine("What is your name?");
-            userName = Console.ReadLine();
-            if ( !string.IsNullOrEmpty(userName) && !AlreadyExist(userName))
-            {
-                invalidName = false;
-            }            
+            throw new Exception($"User {user.Name} already exist");
         }
-        Console.WriteLine("What is your password?");
-        String? userPassword = Console.ReadLine();
-        
-        User user = new User(userName, userPassword);
         _userDatabase.Users.Add(user);
         _userDatabase.SaveChanges();
         return user;
@@ -60,7 +45,6 @@ public class UserSerivce : IUserService
         User? loginUser = _userDatabase.Users.FirstOrDefault(u => u.Name == user.Name && u.Password == user.Password);
         if (loginUser == null)
         {
-            Console.WriteLine("Wrong username or password");
             return null;
         } 
         return loginUser;

@@ -15,7 +15,9 @@ public class User
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
     [Key]
     public String Uuid { get; set; }
+    [Required]
     public String Name { get; set; }
+    [Required]
     public String Password { get; set; } 
     public ICollection<Book> Books { get; } = new List<Book>();
     
