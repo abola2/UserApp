@@ -4,37 +4,19 @@ namespace ConsoleApp1.model;
 
 public class UserDatabase : DbContext
 {
+    public string DbPath { get; }
     
-    private static UserDatabase _instance;
-
-    // Lock object for thread safety
-    private static readonly object _lock = new();
-
-    private UserDatabase()
+    public UserDatabase()
     {
-        Console.WriteLine("UserDatabase initialized.");
+        var folder = Environment.SpecialFolder.LocalApplicationData;
+        var path = Environment.GetFolderPath(folder);
+        DbPath = Path.Join(path, "users.db");
     }
-
-    public static UserDatabase Instance
-    {
-        get
-        {
-            lock (_lock)
-            {
-                if (_instance == null)
-                {
-                    _instance = new UserDatabase();
-                }
-                return _instance;
-            }
-        }
-    }
-    
     
     public DbSet<User> Users { get; set; }
     
     public DbSet<Book> Books { get; set; }
     
     protected override void OnConfiguring(DbContextOptionsBuilder options)
-        => options.UseSqlite($"Data Source=app.db");
+        => options.UseSqlite($"Data Source={DbPath}");
 }

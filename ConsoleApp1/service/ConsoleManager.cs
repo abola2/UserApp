@@ -6,11 +6,14 @@ namespace ConsoleApp1.service;
 public class ConsoleManager
 {
     
-    private readonly UserController _userController;
     
-    public ConsoleManager(UserController userController)
+    private readonly UserController _userController;
+    private readonly UserDatabase _userDatabase;
+    
+    public ConsoleManager(UserController userController, UserDatabase userDatabase)
     {
         _userController = userController;
+        _userDatabase = userDatabase;
         
     }
 
@@ -21,8 +24,8 @@ public class ConsoleManager
 
     public void ReadUserInput()
     {
-        UserDatabase.Instance.Database.EnsureCreated();
-
+        _userDatabase.Database.EnsureCreated();
+        
 
         int userAction = Login();
 

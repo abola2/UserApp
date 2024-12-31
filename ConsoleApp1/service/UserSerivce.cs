@@ -5,15 +5,26 @@ namespace ConsoleApp1.service;
 public class UserSerivce : IUserService
 {
 
+    private readonly UserDatabase _userDatabase;
+    
+    public UserSerivce(UserDatabase userDatabase)
+    {
+        _userDatabase = userDatabase;
+    }
+
 
     public bool AlreadyExist(String name)
     {
-        return UserDatabase.Instance.Users.Any(u => u.Name == name);
+        return _userDatabase.Users.Any(u => u.Name == name);
     }
     
 
     public User AddUser()
     {
+        
+        
+        
+        
         bool invalidName = true;
         String? userName = "";
         while (invalidName)
@@ -29,8 +40,8 @@ public class UserSerivce : IUserService
         String? userPassword = Console.ReadLine();
         
         User user = new User(userName, userPassword);
-        UserDatabase.Instance.Users.Add(user);
-        UserDatabase.Instance.SaveChanges();
+        _userDatabase.Users.Add(user);
+        _userDatabase.SaveChanges();
         return user;
     }
 
@@ -46,7 +57,7 @@ public class UserSerivce : IUserService
 
     public User? Login(User user)
     {
-        User? loginUser = UserDatabase.Instance.Users.FirstOrDefault(u => u.Name == user.Name && u.Password == user.Password);
+        User? loginUser = _userDatabase.Users.FirstOrDefault(u => u.Name == user.Name && u.Password == user.Password);
         if (loginUser == null)
         {
             Console.WriteLine("Wrong username or password");

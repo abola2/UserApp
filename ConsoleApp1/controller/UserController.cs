@@ -9,10 +9,10 @@ public class UserController
     private readonly IBookService _bookService;
     
     
-    public UserController()
+    public UserController(IUserService userService, IBookService bookService)
     {
-        _userService = new UserSerivce();
-        _bookService = new BookSerivce();
+        _userService = userService;
+        _bookService = bookService;
     }
 
     public User AddUser()
@@ -26,10 +26,5 @@ public class UserController
         return _userService.Login(user);
     }
     
-
-    public void addBook(User user, Book book)
-    {
-        _bookService.AddBook(user, book);
-    }
     
 }
