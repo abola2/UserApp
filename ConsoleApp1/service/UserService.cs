@@ -2,12 +2,12 @@ using ConsoleApp1.model;
 
 namespace ConsoleApp1.service;
 
-public class UserSerivce : IUserService
+public class UserService : IUserService
 {
 
     private readonly UserDatabase _userDatabase;
     
-    public UserSerivce(UserDatabase userDatabase)
+    public UserService(UserDatabase userDatabase)
     {
         _userDatabase = userDatabase;
     }

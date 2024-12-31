@@ -14,7 +14,7 @@ public class User
 
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
     [Key]
-    public String Uuid { get; set; }
+    public String? Uuid { get; set; }
     [Required]
     public String Name { get; set; }
     [Required]

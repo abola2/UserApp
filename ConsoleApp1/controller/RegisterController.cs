@@ -6,34 +6,29 @@ namespace ConsoleApp1.controller;
 
 
 [ApiController]
+[Route("register")]
 public class RegisterController : ControllerBase
 {
     
-    private readonly UserSerivce _userSerivce;
+    private readonly UserService _userService;
     
-    public RegisterController(UserSerivce userSerivce)
+    public RegisterController(UserService userService)
     {
-        _userSerivce = userSerivce;
+        _userService = userService;
     }
 
 
-    [HttpPost("register")]
-    public IActionResult register(User user)
+    [HttpPost]
+    public IActionResult Register([FromBody] User user)
     {
-
-        if (_userSerivce.AlreadyExist(user.Name))
+        if (_userService.AlreadyExist(user.Name))
         {
-            return BadRequest("User already exist");
+            return BadRequest("User already exists.");
         }
 
-        _userSerivce.AddUser(user);
-    
+        _userService.AddUser(user);
         return Created("/users/" + user.Name, user);
     }
-    
-    
-
-    
     
     
 }
