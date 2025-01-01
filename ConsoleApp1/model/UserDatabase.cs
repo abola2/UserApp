@@ -17,6 +17,8 @@ public class UserDatabase : DbContext
     
     public DbSet<Book> Books { get; set; }
     
+    public DbSet<SessionToken> SessionTokens { get; set; }
+    
     protected override void OnConfiguring(DbContextOptionsBuilder options)
         => options.UseSqlite($"Data Source={DbPath}");
 }

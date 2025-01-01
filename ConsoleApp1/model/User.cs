@@ -19,6 +19,7 @@ public class User
     public String Name { get; set; }
     [Required]
     public String Password { get; set; } 
+    public SessionToken? SessionToken { get; set; }
     public ICollection<Book> Books { get; } = new List<Book>();
     
     

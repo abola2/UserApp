@@ -1,4 +1,5 @@
 using ConsoleApp1.model;
+using ConsoleApp1.Utils;
 
 namespace ConsoleApp1.service;
 
@@ -46,7 +47,22 @@ public class UserService : IUserService
         if (loginUser == null)
         {
             return null;
-        } 
+        }
+
+        if (loginUser.SessionToken == null)
+        {
+            var session = new SessionToken();
+            session.User = loginUser;
+            session.UserId = loginUser.Uuid;
+            session.Token = SessionUtil.GenerateToken(loginUser.Uuid);
+            session.ExpirationDate = DateTime.Now;
+            
+            
+            loginUser.SessionToken = session;
+            _userDatabase.SessionTokens.Add(session);
+            _userDatabase.SaveChanges();
+        }
+
         return loginUser;
     }
 }
