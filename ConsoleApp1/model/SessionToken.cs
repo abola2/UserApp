@@ -12,11 +12,11 @@ public class SessionToken
     public String SessionTokenId { get; set; }
     
     public String Token { get; set; }
-    
-    [ForeignKey("User")]
-    public String UserId { get; set; }
 
-    public User User { get; set; }
+    [ForeignKey(nameof(User))]
+    public String? Uuid { get; set; }
+    
+    public User? User { get; set; }
     
     public DateTimeOffset ExpirationDate { get; set; }
 }

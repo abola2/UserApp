@@ -33,7 +33,7 @@ public class LoginController : ControllerBase
             return BadRequest("Wrong username or password");
         }
     
-        return Ok(loginUser);
+        return Ok(loginUser.SessionToken.Token);
     }
     
     

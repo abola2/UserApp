@@ -1,13 +1,13 @@
 using ConsoleApp1.model;
 using ConsoleApp1.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConsoleApp1.service;
 
 public class UserService : IUserService
 {
-
     private readonly UserDatabase _userDatabase;
-    
+
     public UserService(UserDatabase userDatabase)
     {
         _userDatabase = userDatabase;
@@ -18,7 +18,7 @@ public class UserService : IUserService
     {
         return _userDatabase.Users.Any(u => u.Name == name);
     }
-    
+
 
     public User AddUser(User user)
     {
@@ -26,6 +26,7 @@ public class UserService : IUserService
         {
             throw new Exception($"User {user.Name} already exist");
         }
+
         _userDatabase.Users.Add(user);
         _userDatabase.SaveChanges();
         return user;
@@ -43,7 +44,8 @@ public class UserService : IUserService
 
     public User? Login(User user)
     {
-        User? loginUser = _userDatabase.Users.FirstOrDefault(u => u.Name == user.Name && u.Password == user.Password);
+        User? loginUser = _userDatabase.Users.Include(u => u.SessionToken)
+            .FirstOrDefault(u => u.Name == user.Name && u.Password == user.Password);
         if (loginUser == null)
         {
             return null;
@@ -53,13 +55,13 @@ public class UserService : IUserService
         {
             var session = new SessionToken();
             session.User = loginUser;
-            session.UserId = loginUser.Uuid;
+            session.Uuid = loginUser.Uuid;
             session.Token = SessionUtil.GenerateToken(loginUser.Uuid);
             session.ExpirationDate = DateTime.Now;
-            
-            
+
+
             loginUser.SessionToken = session;
-            _userDatabase.SessionTokens.Add(session);
+            _userDatabase.Users.Update(loginUser);
             _userDatabase.SaveChanges();
         }
 
