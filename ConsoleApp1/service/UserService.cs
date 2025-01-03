@@ -67,4 +67,28 @@ public class UserService : IUserService
 
         return loginUser;
     }
+
+
+    public User? GetSession(String token)
+    {
+        if (String.IsNullOrEmpty(token))
+        {
+            return null;
+        }
+
+        User? user = _userDatabase.Users.Include(u => u.SessionToken).FirstOrDefault(u => u.Uuid == token);
+
+        if (user == null)
+        {
+            return null;
+        }
+        
+        if (user.SessionToken.ExpirationDate < DateTime.Now)
+        {
+            return null;
+        }
+
+        return user;
+
+    }
 }

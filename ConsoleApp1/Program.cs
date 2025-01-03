@@ -4,6 +4,7 @@ using ConsoleApp1.model;
 using ConsoleApp1.service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 var services = new ServiceCollection();
@@ -36,12 +37,13 @@ app.MapGet("/hello", (HttpContext httpContext) =>
     }
     
     UserDatabase ud = serviceProvider.GetRequiredService<UserDatabase>();
+    IUserService us = serviceProvider.GetRequiredService<IUserService>();
 
-    User? user = ud.Users.FirstOrDefault(u => u.Uuid == authorizationHeader.FirstOrDefault());
+    User? user = us.GetSession(authorizationHeader.FirstOrDefault());
 
     if (user == null)
     {
-        return Results.BadRequest("Wrong username or password");
+        return Results.BadRequest("Invalid token");
     }
     
     return Results.Ok(user);
