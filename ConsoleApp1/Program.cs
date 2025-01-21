@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 var services = new ServiceCollection();
 services.AddSingleton<IUserService, UserService>();
-services.AddSingleton<IBookService, BookSerivce>();
+services.AddSingleton<IBookService, BookService>();
 services.AddSingleton<UserDatabase>();
 services.AddSingleton<UserService>();
 var serviceProvider = services.BuildServiceProvider();
@@ -36,7 +36,6 @@ app.MapGet("/hello", (HttpContext httpContext) =>
         return Results.Unauthorized();
     }
     
-    UserDatabase ud = serviceProvider.GetRequiredService<UserDatabase>();
     IUserService us = serviceProvider.GetRequiredService<IUserService>();
 
     User? user = us.GetSession(authorizationHeader.FirstOrDefault());
@@ -46,8 +45,33 @@ app.MapGet("/hello", (HttpContext httpContext) =>
         return Results.BadRequest("Invalid token");
     }
     
-    return Results.Ok(user);
+    return Results.Ok(user.Name);
 });
+
+app.MapPost("/book", (HttpContext httpContext) =>
+{
+    if (!httpContext.Request.Headers.TryGetValue("Authorization", out var authorizationHeader))
+    {
+        return Results.Unauthorized();
+    }
+    
+    IUserService us = serviceProvider.GetRequiredService<IUserService>();
+    IBookService bs = serviceProvider.GetRequiredService<IBookService>();
+
+    User? user = us.GetSession(authorizationHeader.FirstOrDefault());
+
+    if (user == null)
+    {
+        return Results.BadRequest("Invalid token");
+    }
+
+    Book book = bs.CreateBook("author", "tittle", "pla pla plaa");
+    
+    
+    
+    return Results.Ok(book.Name);
+});
+
 
 app.Run();
 

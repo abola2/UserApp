@@ -76,16 +76,17 @@ public class UserService : IUserService
             return null;
         }
 
-        User? user = _userDatabase.Users.Include(u => u.SessionToken).FirstOrDefault(u => u.Uuid == token);
+        List<User> users = _userDatabase.Users.Include(u => u.SessionToken).ToList();
+        User? user = _userDatabase.Users.Include(u => u.SessionToken).FirstOrDefault(user => user.SessionToken.Token == token);
 
         if (user == null)
         {
             return null;
         }
         
-        if (user.SessionToken.ExpirationDate < DateTime.Now)
+        //if (user.SessionToken.ExpirationDate < DateTime.Now)
         {
-            return null;
+        //    return null;
         }
 
         return user;

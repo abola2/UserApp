@@ -10,6 +10,7 @@ public class Book
     {
         Name = name;
         Author = author;
+        
     }
 
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
