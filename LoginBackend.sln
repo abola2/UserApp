@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{0CE499F5-3B49-48ED-A903-8F9B96036E19}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginBackend", "LoginBackend\LoginBackend.csproj", "{0CE499F5-3B49-48ED-A903-8F9B96036E19}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

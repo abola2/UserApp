@@ -4,7 +4,6 @@ using ConsoleApp1.model;
 using ConsoleApp1.service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 var services = new ServiceCollection();
@@ -18,10 +17,26 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddScoped<UserService>(); 
 builder.Services.AddScoped<UserDatabase>(); 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:5058") // Allow requests from your Blazor app
+                .AllowAnyMethod() // Allow all HTTP methods (GET, POST, etc.)
+                .AllowAnyHeader() // Allow all headers
+                .AllowCredentials(); // Allow credentials (if needed)
+        });
+});
+
+
+
 var app = builder.Build();
 
 app.MapControllers();
 app.UseRouting();
+app.UseCors("AllowSpecificOrigin");
 
 
 UserDatabase database = serviceProvider.GetRequiredService<UserDatabase>();
