@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace ConsoleApp1.Utils;
+namespace LoginBackend.Utils;
 
 public class SessionUtil
 {

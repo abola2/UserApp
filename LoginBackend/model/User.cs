@@ -1,15 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ConsoleApp1.model;
+namespace LoginBackend.model;
 
 [Table("Users")]
 public class User
 {
-    public User(string name = null, string password = null)
+    public User(string name, Byte[] password, Byte[] hash)
     {
         Name = name;
         Password = password;
+        Hash = hash;
     }
 
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
@@ -18,7 +19,10 @@ public class User
     [Required]
     public String Name { get; set; }
     [Required]
-    public String Password { get; set; } 
+    public Byte[] Password { get; set; } 
+    
+    [Required]
+    public Byte[] Hash { get; set; } 
     public SessionToken? SessionToken { get; set; }
     public ICollection<Book> Books { get; } = new List<Book>();
     

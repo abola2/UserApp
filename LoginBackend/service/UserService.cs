@@ -1,8 +1,8 @@
-using ConsoleApp1.model;
-using ConsoleApp1.Utils;
+using LoginBackend.model;
+using LoginBackend.Utils;
 using Microsoft.EntityFrameworkCore;
 
-namespace ConsoleApp1.service;
+namespace LoginBackend.service;
 
 public class UserService : IUserService
 {
@@ -20,16 +20,20 @@ public class UserService : IUserService
     }
 
 
-    public User AddUser(User user)
+    public User AddUser(UserRequest user)
     {
         if (AlreadyExist(user.Name))
         {
             throw new Exception($"User {user.Name} already exist");
         }
 
-        _userDatabase.Users.Add(user);
+        var salt = PasswordUtil.GenerateSalt(16);
+        var password = PasswordUtil.HashPassword(user.Password, salt);
+        var newUser = new User(user.Name, password, salt);
+
+        _userDatabase.Users.Add(newUser);
         _userDatabase.SaveChanges();
-        return user;
+        return newUser;
     }
 
     public User UpdateUser(User user)
@@ -42,30 +46,33 @@ public class UserService : IUserService
         throw new NotImplementedException();
     }
 
-    public User? Login(User user)
+    public User? Login(UserRequest user)
     {
-        User? loginUser = _userDatabase.Users.Include(u => u.SessionToken)
-            .FirstOrDefault(u => u.Name == user.Name && u.Password == user.Password);
-        if (loginUser == null)
+        
+        User lUser= _userDatabase.Users.FirstOrDefault(u => u.Name == user.Name);
+        
+        bool validLogin =  PasswordUtil.VerifyPassword(user.Password, lUser.Hash, lUser.Password);
+        
+        if (!validLogin)
         {
             return null;
         }
 
-        if (loginUser.SessionToken == null)
+        if (lUser.SessionToken == null)
         {
             var session = new SessionToken();
-            session.User = loginUser;
-            session.Uuid = loginUser.Uuid;
-            session.Token = SessionUtil.GenerateToken(loginUser.Uuid);
+            session.User = lUser;
+            session.Uuid = lUser.Uuid;
+            session.Token = SessionUtil.GenerateToken(lUser.Uuid);
             session.ExpirationDate = DateTime.Now;
 
 
-            loginUser.SessionToken = session;
-            _userDatabase.Users.Update(loginUser);
+            lUser.SessionToken = session;
+            _userDatabase.Users.Update(lUser);
             _userDatabase.SaveChanges();
         }
 
-        return loginUser;
+        return lUser;
     }
 
 

@@ -1,4 +1,4 @@
-namespace ConsoleApp1.mapper;
+namespace LoginBackend.mapper;
 
 public class BookMapper
 {

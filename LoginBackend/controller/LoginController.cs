@@ -1,8 +1,8 @@
-using ConsoleApp1.model;
-using ConsoleApp1.service;
+using LoginBackend.model;
+using LoginBackend.service;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ConsoleApp1.controller;
+namespace LoginBackend.controller;
 
 
 [ApiController]
@@ -19,7 +19,7 @@ public class LoginController : ControllerBase
 
 
     [HttpPost]
-    public IActionResult Login([FromBody] User user)
+    public IActionResult Login([FromBody] UserRequest user)
     {
         if (!_userService.AlreadyExist(user.Name))
         {

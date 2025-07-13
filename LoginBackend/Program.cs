@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using ConsoleApp1.model;
-using ConsoleApp1.service;
+using LoginBackend.model;
+using LoginBackend.service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +23,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigin",
         builder =>
         {
-            builder.WithOrigins("http://localhost:5058") // Allow requests from your Blazor app
+            builder.WithOrigins("http://localhost:5000") 
                 .AllowAnyMethod() // Allow all HTTP methods (GET, POST, etc.)
                 .AllowAnyHeader() // Allow all headers
                 .AllowCredentials(); // Allow credentials (if needed)

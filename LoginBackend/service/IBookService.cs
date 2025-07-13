@@ -1,6 +1,6 @@
-using ConsoleApp1.model;
+using LoginBackend.model;
 
-namespace ConsoleApp1.service;
+namespace LoginBackend.service;
 
 public interface IBookService
 {

@@ -1,19 +1,19 @@
-using ConsoleApp1.model;
+using LoginBackend.model;
 
-namespace ConsoleApp1.service;
+namespace LoginBackend.service;
 
 public interface IUserService
 {
 
     bool AlreadyExist(String name);
 
-    User AddUser(User user);
+    User AddUser(UserRequest user);
     
     User UpdateUser(User user);
     
     void DeleteUser(User user);
     
-    User? Login(User user);
+    User? Login(UserRequest user);
 
     User? GetSession(String token);
 

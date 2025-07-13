@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace ConsoleApp1.model;
+namespace LoginBackend.model;
 
 public class UserDatabase : DbContext
 {
@@ -10,7 +10,7 @@ public class UserDatabase : DbContext
     {
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
-        DbPath = Path.Join(path, "myapp.db");
+        DbPath = Path.Join(path, "loginbackend.db");
     }
     
     public DbSet<User> Users { get; set; }

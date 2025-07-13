@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ConsoleApp1.model;
+namespace LoginBackend.model;
 
 [Table("Books")]
 public class Book
