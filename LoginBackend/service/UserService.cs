@@ -49,7 +49,7 @@ public class UserService : IUserService
     public User? Login(UserRequest user)
     {
         
-        User lUser= _userDatabase.Users.FirstOrDefault(u => u.Name == user.Name);
+        User lUser= _userDatabase.Users.Include(u => u.SessionToken).FirstOrDefault(u => u.Name == user.Name);
         
         bool validLogin =  PasswordUtil.VerifyPassword(user.Password, lUser.Hash, lUser.Password);
         
@@ -60,11 +60,13 @@ public class UserService : IUserService
 
         if (lUser.SessionToken == null)
         {
-            var session = new SessionToken();
-            session.User = lUser;
-            session.Uuid = lUser.Uuid;
-            session.Token = SessionUtil.GenerateToken(lUser.Uuid);
-            session.ExpirationDate = DateTime.Now;
+            var session = new SessionToken
+            {
+                User = lUser,
+                Uuid = lUser.Uuid,
+                Token = SessionUtil.GenerateToken(lUser.Uuid),
+                ExpirationDate = DateTime.Now
+            };
 
 
             lUser.SessionToken = session;
