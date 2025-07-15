@@ -6,7 +6,7 @@ namespace LoginBackend.model;
 [Table("Books")]
 public class Book
 {
-    public Book(string name = null, string author = null)
+    public Book(string name, string author)
     {
         Name = name;
         Author = author;

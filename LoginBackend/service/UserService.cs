@@ -14,7 +14,7 @@ public class UserService : IUserService
     }
 
 
-    public bool AlreadyExist(String name)
+    public bool AlreadyExist(string name)
     {
         return _userDatabase.Users.Any(u => u.Name == name);
     }
@@ -46,56 +46,59 @@ public class UserService : IUserService
         throw new NotImplementedException();
     }
 
-    public User? Login(UserRequest user)
+    public User? Login(UserRequest user,  string authToken)
     {
         
-        User lUser= _userDatabase.Users.Include(u => u.SessionToken).FirstOrDefault(u => u.Name == user.Name);
+        var tokenUser = GetSession(authToken);
+
+        if (tokenUser != null)
+        {
+            return tokenUser;
+        }
         
-        bool validLogin =  PasswordUtil.VerifyPassword(user.Password, lUser.Hash, lUser.Password);
+        var lUser= _userDatabase.Users.Include(u => u.SessionToken).FirstOrDefault(u => u.Name == user.Name);
+        
+        var validLogin =  PasswordUtil.VerifyPassword(user.Password, lUser.Hash, lUser.Password);
         
         if (!validLogin)
         {
             return null;
         }
 
-        if (lUser.SessionToken == null)
+        if (lUser.SessionToken.ExpirationDate < DateTime.Now)
         {
             var session = new SessionToken
             {
                 User = lUser,
                 Uuid = lUser.Uuid,
                 Token = SessionUtil.GenerateToken(lUser.Uuid),
-                ExpirationDate = DateTime.Now
+                ExpirationDate = DateTime.Now.AddHours(12)
             };
-
-
             lUser.SessionToken = session;
             _userDatabase.Users.Update(lUser);
             _userDatabase.SaveChanges();
         }
-
         return lUser;
     }
 
 
-    public User? GetSession(String token)
+    public User? GetSession(string token)
     {
         if (String.IsNullOrEmpty(token))
         {
             return null;
         }
 
-        List<User> users = _userDatabase.Users.Include(u => u.SessionToken).ToList();
-        User? user = _userDatabase.Users.Include(u => u.SessionToken).FirstOrDefault(user => user.SessionToken.Token == token);
+        var user = _userDatabase.Users.Include(u => u.SessionToken).FirstOrDefault(user => user.SessionToken.Token == token);
 
         if (user == null)
         {
             return null;
         }
         
-        //if (user.SessionToken.ExpirationDate < DateTime.Now)
+        if (user.SessionToken.ExpirationDate < DateTime.Now)
         {
-        //    return null;
+            return null;
         }
 
         return user;

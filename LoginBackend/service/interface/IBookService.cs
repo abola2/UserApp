@@ -6,6 +6,8 @@ public interface IBookService
 {
     
     Book CreateBook(string author, string title, string note);
+    
+    List<Book> GetBooks();
 
     void AddBook(User user, Book book);
     

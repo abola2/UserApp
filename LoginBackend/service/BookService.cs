@@ -19,6 +19,11 @@ public class BookService : IBookService
         return book;
     }
 
+    public List<Book> GetBooks()
+    {
+        return _userDatabase.Books.ToList();
+    }
+
 
     public List<Book> GetBooks(string author)
     {
@@ -27,16 +32,16 @@ public class BookService : IBookService
 
     public void AddBook(User user, Book book)
     {
-        Console.WriteLine("Hello book");
+        _userDatabase.Books.Add(book);
     }
 
     public void UpdateBook(Book book)
     {
-        throw new NotImplementedException();
+        _userDatabase.Books.Update(book);
     }
 
     public void DeleteBook(Book book)
     {
-        throw new NotImplementedException();
+        _userDatabase.Books.Remove(book);
     }
 }

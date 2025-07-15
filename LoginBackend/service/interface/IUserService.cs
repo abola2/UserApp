@@ -13,7 +13,7 @@ public interface IUserService
     
     void DeleteUser(User user);
     
-    User? Login(UserRequest user);
+    User? Login(UserRequest user,  string authToken);
 
     User? GetSession(String token);
 

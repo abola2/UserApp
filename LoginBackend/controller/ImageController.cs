@@ -6,13 +6,13 @@ namespace LoginBackend.controller;
 
 
 [ApiController]
-[Route("login")]
-public class LoginController : ControllerBase
+[Route("image")]
+public class ImageController : ControllerBase
 {
     
     private readonly IUserService _userService;
     
-    public LoginController(UserService userService)
+    public ImageController(UserService userService)
     {
         _userService = userService;
     }
@@ -21,10 +21,14 @@ public class LoginController : ControllerBase
     [HttpPost]
     public IActionResult Login([FromBody] UserRequest user)
     {
-
-        string authToken = Request.Headers.Authorization;
+        if (!_userService.AlreadyExist(user.Name))
+        {
+            return BadRequest("Wrong username or password");
+        }
         
-        User? loginUser = _userService.Login(user, authToken);
+        String token = Request.Headers.Authorization;
+
+        User? loginUser = _userService.Login(user, token);
 
         if (loginUser == null)
         {

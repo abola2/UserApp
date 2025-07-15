@@ -10,7 +10,7 @@ namespace LoginBackend.controller;
 public class RegisterController : ControllerBase
 {
     
-    private readonly UserService _userService;
+    private readonly IUserService _userService;
     
     public RegisterController(UserService userService)
     {
