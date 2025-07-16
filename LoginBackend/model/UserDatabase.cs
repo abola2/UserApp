@@ -10,7 +10,9 @@ public class UserDatabase : DbContext
     {
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
-        DbPath = Path.Join(path, "loginbackend.db");
+        
+        DbPath = Path.Join("loginbackend.db");
+        //DbPath = Path.Join(path, "loginbackend.db");
     }
     
     public DbSet<User> Users { get; set; }

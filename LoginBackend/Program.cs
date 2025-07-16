@@ -18,25 +18,14 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<UserService>(); 
 builder.Services.AddScoped<UserDatabase>(); 
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowSpecificOrigin",
-        builder =>
-        {
-            builder.WithOrigins("http://localhost:5000") 
-                .AllowAnyMethod() // Allow all HTTP methods (GET, POST, etc.)
-                .AllowAnyHeader() // Allow all headers
-                .AllowCredentials(); // Allow credentials (if needed)
-        });
-});
-
-
-
 var app = builder.Build();
 
 app.MapControllers();
 app.UseRouting();
-app.UseCors("AllowSpecificOrigin");
+app.UseCors(static settings =>
+{
+    settings.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+});
 
 
 UserDatabase database = serviceProvider.GetRequiredService<UserDatabase>();

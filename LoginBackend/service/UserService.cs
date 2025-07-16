@@ -57,6 +57,11 @@ public class UserService : IUserService
         }
         
         var lUser= _userDatabase.Users.Include(u => u.SessionToken).FirstOrDefault(u => u.Name == user.Name);
+
+        if (lUser == null)
+        {
+            return null;
+        }
         
         var validLogin =  PasswordUtil.VerifyPassword(user.Password, lUser.Hash, lUser.Password);
         
@@ -65,7 +70,7 @@ public class UserService : IUserService
             return null;
         }
 
-        if (lUser.SessionToken.ExpirationDate < DateTime.Now)
+        if (lUser.SessionToken == null || lUser.SessionToken.ExpirationDate < DateTime.Now)
         {
             var session = new SessionToken
             {
