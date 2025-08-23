@@ -1,3 +1,4 @@
+using LoginBackend.mapper;
 using LoginBackend.model;
 using LoginBackend.service;
 using Microsoft.AspNetCore.Mvc;
@@ -48,7 +49,9 @@ public class BookController : ControllerBase
             return BadRequest("Old session");
         }
 
-        return Ok(_bookService.GetBooks());
+        var books = _bookService.GetBooks(loginUser);
+        var modifiedBooks = BookMapper.BooksToDto(books);
+        return Ok(modifiedBooks);
     }
     
     [HttpPost("remove")]

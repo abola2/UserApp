@@ -1,4 +1,5 @@
 using LoginBackend.model;
+using Microsoft.EntityFrameworkCore;
 
 namespace LoginBackend.service;
 
@@ -16,12 +17,14 @@ public class BookService : IBookService
     {
         Book book = new Book(title, author);
         _userDatabase.Books.Add(book);
+        
         return book;
     }
 
-    public List<Book> GetBooks()
+    public List<Book> GetBooks(User user)
     {
-        return _userDatabase.Books.ToList();
+        var books = _userDatabase.Users.Include(u => u.Books).FirstOrDefault(u => u.Uuid == user.Uuid).Books.ToList();
+        return books;
     }
 
 
@@ -32,7 +35,9 @@ public class BookService : IBookService
 
     public void AddBook(User user, Book book)
     {
-        _userDatabase.Books.Add(book);
+        user.Books.Add(book);
+        _userDatabase.Users.Update(user);
+        _userDatabase.SaveChanges();
     }
 
     public void UpdateBook(Book book)
@@ -43,5 +48,6 @@ public class BookService : IBookService
     public void DeleteBook(Book book)
     {
         _userDatabase.Books.Remove(book);
+        _userDatabase.SaveChanges();
     }
 }
