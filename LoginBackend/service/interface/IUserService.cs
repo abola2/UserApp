@@ -15,6 +15,6 @@ public interface IUserService
     
     User? Login(UserRequest user,  string authToken);
 
-    User? GetSession(String token);
+    User? GetUser(String token);
 
 }

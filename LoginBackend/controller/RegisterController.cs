@@ -6,7 +6,7 @@ namespace LoginBackend.controller;
 
 
 [ApiController]
-[Route("register")]
+[Route("api/[controller]")]
 public class RegisterController : ControllerBase
 {
     

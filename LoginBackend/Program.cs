@@ -3,78 +3,42 @@
 using LoginBackend.model;
 using LoginBackend.service;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
 var services = new ServiceCollection();
-services.AddSingleton<IUserService, UserService>();
-services.AddSingleton<IBookService, BookService>();
 services.AddSingleton<UserDatabase>();
 services.AddSingleton<UserService>();
+services.AddSingleton<BookService>();
 var serviceProvider = services.BuildServiceProvider();
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddScoped<UserService>(); 
+builder.Services.AddScoped<BookService>(); 
 builder.Services.AddScoped<UserDatabase>(); 
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
 
 var app = builder.Build();
 
+app.UseCors(cors => cors
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true)
+    .AllowCredentials()
+);
 app.MapControllers();
-app.UseRouting();
-app.UseCors(static settings =>
-{
-    settings.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
-});
+
+
+
 
 
 UserDatabase database = serviceProvider.GetRequiredService<UserDatabase>();
 database.Database.EnsureCreated();
-
-
-
-app.MapGet("/hello", (HttpContext httpContext) =>
-{
-    if (!httpContext.Request.Headers.TryGetValue("Authorization", out var authorizationHeader))
-    {
-        return Results.Unauthorized();
-    }
-    
-    IUserService us = serviceProvider.GetRequiredService<IUserService>();
-
-    User? user = us.GetSession(authorizationHeader.FirstOrDefault());
-
-    if (user == null)
-    {
-        return Results.BadRequest("Invalid token");
-    }
-    
-    return Results.Ok(user.Name);
-});
-
-app.MapPost("/book", (HttpContext httpContext) =>
-{
-    if (!httpContext.Request.Headers.TryGetValue("Authorization", out var authorizationHeader))
-    {
-        return Results.Unauthorized();
-    }
-    
-    IUserService us = serviceProvider.GetRequiredService<IUserService>();
-    IBookService bs = serviceProvider.GetRequiredService<IBookService>();
-
-    User? user = us.GetSession(authorizationHeader.FirstOrDefault());
-
-    if (user == null)
-    {
-        return Results.BadRequest("Invalid token");
-    }
-
-    Book book = bs.CreateBook("author", "tittle", "pla pla plaa");
-    
-    
-    
-    return Results.Ok(book.Name);
-});
 
 
 app.Run();

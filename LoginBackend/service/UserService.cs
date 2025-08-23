@@ -49,7 +49,7 @@ public class UserService : IUserService
     public User? Login(UserRequest user,  string authToken)
     {
         
-        var tokenUser = GetSession(authToken);
+        var tokenUser = GetUser(authToken);
 
         if (tokenUser != null)
         {
@@ -87,7 +87,7 @@ public class UserService : IUserService
     }
 
 
-    public User? GetSession(string token)
+    public User? GetUser(string token)
     {
         if (String.IsNullOrEmpty(token))
         {

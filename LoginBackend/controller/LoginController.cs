@@ -6,7 +6,7 @@ namespace LoginBackend.controller;
 
 
 [ApiController]
-[Route("login")]
+[Route("api/[controller]")]
 public class LoginController : ControllerBase
 {
     
@@ -17,12 +17,34 @@ public class LoginController : ControllerBase
         _userService = userService;
     }
 
+    [HttpGet("hello")]
+    public IActionResult Hello()
+    {
+        string authToken = Request.Headers.Authorization;
+        
+        var loggedUser = _userService.GetUser(authToken);
 
-    [HttpPost]
-    public IActionResult Login([FromBody] UserRequest user)
+        if (loggedUser != null)
+        {
+            return Ok();
+        }
+        return Unauthorized();
+    }
+
+
+    [HttpPost("user")]
+    public IActionResult Login([FromBody] UserRequest? user)
     {
 
         string authToken = Request.Headers.Authorization;
+        
+        var loggedUser = _userService.GetUser(authToken);
+
+        if (loggedUser != null)
+        {
+            return Ok(loggedUser.SessionToken.Token);
+        }
+        
         
         User? loginUser = _userService.Login(user, authToken);
 
