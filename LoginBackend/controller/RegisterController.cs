@@ -1,21 +1,18 @@
 using LoginBackend.model;
 using LoginBackend.service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace LoginBackend.controller;
 
 
 [ApiController]
 [Route("api/[controller]")]
-public class RegisterController : ControllerBase
+[EnableRateLimiting("login")]
+public class RegisterController(UserService userService) : ControllerBase
 {
     
-    private readonly IUserService _userService;
-    
-    public RegisterController(UserService userService)
-    {
-        _userService = userService;
-    }
+    private readonly IUserService _userService = userService;
 
 
     [HttpPost]
@@ -24,6 +21,11 @@ public class RegisterController : ControllerBase
         if (_userService.AlreadyExist(user.Name))
         {
             return BadRequest("User already exists.");
+        }
+
+        if (String.IsNullOrEmpty(user.Password) && String.IsNullOrEmpty(user.Name))
+        {
+            return BadRequest("Password and Name are required.");
         }
 
         _userService.AddUser(user);

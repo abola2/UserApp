@@ -1,13 +1,7 @@
 namespace LoginBackend.model;
 
-public class UserRequest
+public class UserRequest(string name, string password)
 {
-    public UserRequest(string name, string password)
-    {
-        Name = name;
-        Password = password;
-    }
-    
-    public String Name { get; set; }
-    public String Password { get; set; } 
+    public String Name { get; set; } = name;
+    public String Password { get; set; } = password;
 }

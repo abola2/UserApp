@@ -4,25 +4,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace LoginBackend.model;
 
 [Table("Users")]
-public class User
+public class User(string name, Byte[] password, Byte[] hash)
 {
-    public User(string name, Byte[] password, Byte[] hash)
-    {
-        Name = name;
-        Password = password;
-        Hash = hash;
-    }
-
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
     [Key]
     public String? Uuid { get; set; }
     [Required]
-    public String Name { get; set; }
+    public String Name { get; set; } = name;
+
     [Required]
-    public Byte[] Password { get; set; } 
-    
+    public Byte[] Password { get; set; } = password;
+
     [Required]
-    public Byte[] Hash { get; set; } 
+    public Byte[] Hash { get; set; } = hash;
+
     public SessionToken? SessionToken { get; set; }
     public ICollection<Book> Books { get; } = new List<Book>();
     

@@ -4,19 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LoginBackend.service;
 
-public class UserService : IUserService
+public class UserService(UserDatabase userDatabase) : IUserService
 {
-    private readonly UserDatabase _userDatabase;
-
-    public UserService(UserDatabase userDatabase)
-    {
-        _userDatabase = userDatabase;
-    }
-
-
     public bool AlreadyExist(string name)
     {
-        return _userDatabase.Users.Any(u => u.Name == name);
+        return userDatabase.Users.Any(u => u.Name == name);
     }
 
 
@@ -31,8 +23,8 @@ public class UserService : IUserService
         var password = PasswordUtil.HashPassword(user.Password, salt);
         var newUser = new User(user.Name, password, salt);
 
-        _userDatabase.Users.Add(newUser);
-        _userDatabase.SaveChanges();
+        userDatabase.Users.Add(newUser);
+        userDatabase.SaveChanges();
         return newUser;
     }
 
@@ -56,7 +48,7 @@ public class UserService : IUserService
             return tokenUser;
         }
         
-        var lUser= _userDatabase.Users.Include(u => u.SessionToken).FirstOrDefault(u => u.Name == user.Name);
+        var lUser= userDatabase.Users.Include(u => u.SessionToken).FirstOrDefault(u => u.Name == user.Name);
 
         if (lUser == null)
         {
@@ -80,8 +72,8 @@ public class UserService : IUserService
                 ExpirationDate = DateTime.Now.AddHours(12)
             };
             lUser.SessionToken = session;
-            _userDatabase.Users.Update(lUser);
-            _userDatabase.SaveChanges();
+            userDatabase.Users.Update(lUser);
+            userDatabase.SaveChanges();
         }
         return lUser;
     }
@@ -94,7 +86,7 @@ public class UserService : IUserService
             return null;
         }
 
-        var user = _userDatabase.Users.Include(u => u.SessionToken).FirstOrDefault(user => user.SessionToken.Token == token);
+        var user = userDatabase.Users.Include(u => u.SessionToken).FirstOrDefault(user => user.SessionToken.Token == token);
 
         if (user == null)
         {
