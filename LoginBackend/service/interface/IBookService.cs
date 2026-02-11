@@ -8,11 +8,12 @@ public interface IBookService
     Book CreateBook(string author, string title, string note);
     
     List<Book> GetBooks(User user);
+    Book GetBook(User user, String id);
 
-    void AddBook(User user, Book book);
+    Book AddBook(User user, Book book);
     
-    void UpdateBook(Book book);
+    Book UpdateBook(Book book);
     
-    void DeleteBook(Book book);
+    void DeleteBook(User user, Book book);
     
 }

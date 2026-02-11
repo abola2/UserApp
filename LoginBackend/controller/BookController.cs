@@ -29,12 +29,17 @@ public class BookController : ControllerBase
 
         if (loginUser == null)
         {
-            return BadRequest("Old session");
+            return Unauthorized("Old session");
         }
 
-        _bookService.AddBook(loginUser, book);
-        
-        return Ok();
+        var newBook = _bookService.AddBook(loginUser, book);
+        var dto = new BookDto
+        {
+            Id = newBook.Uuid,
+            Title = newBook.Name,
+            Author = newBook.Author,
+        };
+        return Ok(dto);
     }
     
     [HttpGet("get")]
@@ -46,7 +51,7 @@ public class BookController : ControllerBase
 
         if (loginUser == null)
         {
-            return BadRequest("Old session");
+            return Unauthorized("Old session");
         }
 
         var books = _bookService.GetBooks(loginUser);
@@ -54,8 +59,9 @@ public class BookController : ControllerBase
         return Ok(modifiedBooks);
     }
     
+    
     [HttpPost("remove")]
-    public IActionResult RemoveBook([FromBody] Book? book)
+    public IActionResult RemoveBook([FromBody] RemoveBook removeBook)
     {
         Request.Cookies.TryGetValue("token", out var token);
 
@@ -63,10 +69,17 @@ public class BookController : ControllerBase
 
         if (loginUser == null)
         {
-            return BadRequest("Old session");
+            return Unauthorized("Old session");
         }
 
-        _bookService.AddBook(loginUser, book);
+        if (removeBook.Id == null)
+        {
+            return BadRequest("id is null");
+        }
+        
+        var book = _bookService.GetBook(loginUser, removeBook.Id);
+
+        _bookService.DeleteBook(loginUser, book);
         
         return Ok();
     }
