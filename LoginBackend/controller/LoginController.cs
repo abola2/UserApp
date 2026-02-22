@@ -19,12 +19,12 @@ public class LoginController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet("hello")]
+    [HttpPost("hello")]
     public IActionResult Hello()
     {
-        string authToken = Request.Headers.Authorization;
+        Request.Cookies.TryGetValue("token", out var token);
         
-        var loggedUser = _userService.GetUser(authToken);
+        var loggedUser = _userService.GetUser(token);
 
         if (loggedUser != null)
         {
