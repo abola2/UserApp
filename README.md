@@ -5,4 +5,5 @@ A User Authentication system built with ASP.NET Core Web API and Entity Framewor
 ## Running
 
 `docker build -t loginbackend .`
+
 `docker run -e ConnectionStrings__DefaultConnection="Data Source=/app/data/LoginBackend.db" -p 8080:8080 loginbackend`
